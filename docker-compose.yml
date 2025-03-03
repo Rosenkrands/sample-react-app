@@ -8,8 +8,8 @@ services:
     ports:
       - 3000:3000 # Map port 3000 on the host to port 3000 on the container
     volumes:
-      - ./vite-project:/vite-project # Mount the ./app directory on the host to /app in the container
-      - /vite-project/node_modules # Anonymous volume to persist node_modules
+      - ./vite-project:/app # Mount the ./app directory on the host to /app in the container
+      - /app/node_modules # Anonymous volume to persist node_modules
     networks:
       - network # Connect the container to the 'network' network
 
@@ -17,6 +17,7 @@ services:
     build:
       context: ./asp-net-core-project # Path to the directory containing the Dockerfile for the API service
       dockerfile: Dockerfile.dev # Specifies the Dockerfile to use for building the API service
+    container_name: sample-api-dev # Sets the container name for the API service
     ports:
       - "4000:4000" # Maps port 8080 on the host to port 8080 in the container (HTTP)
     env_file:
@@ -31,6 +32,7 @@ services:
 
   db:
     image: postgres:latest # Uses the latest PostgreSQL image from Docker Hub
+    container_name: sample-db-dev # Sets the container name for the PostgreSQL service
     environment:
       POSTGRES_USER: ${POSTGRES_USER} # Sets the PostgreSQL user from environment variables
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD} # Sets the PostgreSQL password from environment variables

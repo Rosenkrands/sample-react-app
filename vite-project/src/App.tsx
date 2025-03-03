@@ -2,7 +2,7 @@ import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Link from "@mui/material/Link";
-import { Button, ButtonGroup, Stack } from "@mui/material";
+import { Stack } from "@mui/material";
 
 function Copyright() {
   return (
@@ -28,7 +28,12 @@ export default function App() {
     <Container maxWidth="lg">
       <Box sx={{ my: 4 }}>
         <Box sx={{ mb: 2 }}>
-          <Stack direction={"row"} spacing={2} justifyContent={"space-between"}>
+          <Stack
+            direction={"row"}
+            spacing={2}
+            justifyContent={"space-between"}
+            alignItems={"center"}
+          >
             <Typography variant="h4" component="h1" sx={{ mb: 2 }}>
               Sample App
             </Typography>
