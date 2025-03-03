@@ -13,6 +13,44 @@ services:
     networks:
       - network # Connect the container to the 'network' network
 
+  api:
+    build:
+      context: ./asp-net-core-project # Path to the directory containing the Dockerfile for the API service
+      dockerfile: Dockerfile.dev # Specifies the Dockerfile to use for building the API service
+    ports:
+      - "4000:4000" # Maps port 8080 on the host to port 8080 in the container (HTTP)
+    env_file:
+      - ./.env # Loads environment variables from a .env file
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development # Sets the ASP.NET Core environment to Development
+      - ASPNETCORE_URLS=http://+:4000 # Sets the ASP.NET Core URL to http://+:4000
+      - POSTGRES_SERVER=db # Sets the PostgreSQL server address to the 'db' service
+    depends_on:
+      db:
+        condition: service_healthy # Ensures the 'api' service starts only after the 'db' service is healthy
+
+  db:
+    image: postgres:latest # Uses the latest PostgreSQL image from Docker Hub
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER} # Sets the PostgreSQL user from environment variables
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD} # Sets the PostgreSQL password from environment variables
+      POSTGRES_DB: ${POSTGRES_DB} # Sets the PostgreSQL database name from environment variables
+      POSTGRES_INITDB_ARGS: "--encoding=UTF8" # Initializes the database with UTF-8 encoding
+    ports:
+      - "5432:5432" # Maps port 5432 on the host to port 5432 in the container
+    volumes:
+      - db_data:/var/lib/postgresql/data # Persists PostgreSQL data in a Docker volume
+    tmpfs:
+      - /var/lib/postgresql/data # Uses tmpfs for PostgreSQL data directory for better performance
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"] # Checks if PostgreSQL is ready
+      interval: 5s # Interval between health checks
+      timeout: 5s # Timeout for each health check
+      retries: 5 # Number of retries before considering the service as unhealthy
+
+volumes:
+  db_data: # Defines a Docker volume named 'db_data' for persisting PostgreSQL data
+
 networks:
   network:
     driver: bridge # Use the bridge network driver
