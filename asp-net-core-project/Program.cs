@@ -25,6 +25,11 @@ builder.Services.AddAuthorization();
 builder.Services.AddIdentityApiEndpoints<ApplicationUser>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.Cookie.Name = "SampleAppCookie";
+});
+
 // Add Swagger services
 builder.Services.AddSwaggerGen(c =>
 {
@@ -42,6 +47,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1"));
 }
 
+app.UseAuthorization();
 app.MapIdentityApi<ApplicationUser>();
 
 app.MapPost("/logout", async (HttpContext context, SignInManager<ApplicationUser> signInManager) =>
@@ -56,7 +62,12 @@ app.MapGet("/pingauth", (ClaimsPrincipal user) =>
     return Results.Json(new { Email = email });
 }).RequireAuthorization();
 
-app.UseCors(p => p.WithOrigins("http://localhost:3000").AllowAnyMethod().AllowAnyHeader());
+app.UseCors(p => p
+    .WithOrigins("http://localhost:3000")
+    .AllowAnyMethod()
+    .AllowAnyHeader()
+    .AllowCredentials());
+
 app.UseHttpsRedirection();
 
 app.Run();
