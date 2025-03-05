@@ -1,3 +1,4 @@
+import { Box, Paper, CircularProgress, Typography, Stack } from "@mui/material";
 import axios from "axios";
 import { createContext, useEffect, useState } from "react";
 import { Navigate, useNavigate } from "react-router";
@@ -18,6 +19,7 @@ export default function AuthorizeView({
   const [user, setUser] = useState<User>(emptyUser);
   const [loading, setLoading] = useState(true);
   const [authorized, setAuthorized] = useState(false);
+  const [retryCount, setRetryCount] = useState(0);
 
   function wait(delay: number) {
     return new Promise((resolve) => {
@@ -45,6 +47,7 @@ export default function AuthorizeView({
         }
       } catch (error) {
         retryCount++;
+        setRetryCount(retryCount);
         if (retryCount > maxRetries) {
           throw error;
         } else {
@@ -73,12 +76,33 @@ export default function AuthorizeView({
   }, []);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        minHeight="100vh"
+      >
+        <Paper elevation={3} style={{ padding: "20px" }}>
+          <Stack spacing={2} justifyContent={"center"} alignItems={"center"}>
+            <Typography variant="body2" color="textSecondary">
+              Please wait while we verify your credentials.
+            </Typography>
+            <CircularProgress />
+            <Typography variant="h6">Attempt {retryCount} of 10</Typography>
+            <Typography variant="body2" color="textSecondary">
+              If you know you are not signed in, please{" "}
+              <a href="/signin">sign in</a>.
+            </Typography>
+          </Stack>
+        </Paper>
+      </Box>
+    );
   }
 
   if (authorized && !loading) {
     return <UserContext.Provider value={user}>{children}</UserContext.Provider>;
   }
 
-  return <Navigate to="/login" />;
+  return <Navigate to="/signin" />;
 }

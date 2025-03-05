@@ -16,7 +16,7 @@ export default function Home() {
       );
       if (response.status === 200) {
         console.log("Logout successful");
-        window.location.href = "/login";
+        window.location.href = "/signin";
       } else {
         console.error("Logout failed");
       }

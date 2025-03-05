@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using asp_net_core_project.Data;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -21,6 +22,11 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 });
 builder.Services.AddOpenApi();
 builder.Services.AddCors();
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders =
+        ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+});
 builder.Services.AddAuthorization();
 builder.Services.AddIdentityApiEndpoints<ApplicationUser>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
@@ -37,6 +43,8 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 var app = builder.Build();
+
+app.UseForwardedHeaders();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -63,7 +71,7 @@ app.MapGet("/pingauth", (ClaimsPrincipal user) =>
 }).RequireAuthorization();
 
 app.UseCors(p => p
-    .WithOrigins("http://localhost:3000")
+    .WithOrigins("http://localhost:8080")
     .AllowAnyMethod()
     .AllowAnyHeader()
     .AllowCredentials());

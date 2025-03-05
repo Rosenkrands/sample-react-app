@@ -34,7 +34,7 @@ export default function Register() {
       })
       .then((response) => {
         console.log(response);
-        navigate("/login");
+        navigate("/signin");
       })
       .catch((error) => {
         console.error(error);
@@ -101,7 +101,6 @@ export default function Register() {
             onChange={(e) => setConfirmPassword(e.target.value)}
           />
           <Button
-            // href="/login"
             type="submit"
             variant="contained"
             color="primary"
@@ -113,7 +112,7 @@ export default function Register() {
         </form>
         <Box sx={{ mt: 2, display: "flex", justifyContent: "center" }}>
           <Typography variant="body1" component="p">
-            Already have an account? <Link href="/login">Login</Link>
+            Already have an account? <Link href="/sigin">Login</Link>
           </Typography>
         </Box>
         <Box sx={{ mt: 2 }}>

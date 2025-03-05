@@ -1,4 +1,17 @@
 services:
+  nginx:
+    image: nginx:latest
+    container_name: sample-nginx-dev
+    ports:
+      - "8080:80"
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - app
+      - api
+    networks:
+      - network
+
   app:
     build:
       context: ./vite-project # The build context, where the Dockerfile is located
@@ -29,6 +42,8 @@ services:
     depends_on:
       db:
         condition: service_healthy # Ensures the 'api' service starts only after the 'db' service is healthy
+    networks:
+      - network # Connects the 'api' service to the 'network' network
 
   db:
     image: postgres:latest # Uses the latest PostgreSQL image from Docker Hub
@@ -49,6 +64,8 @@ services:
       interval: 5s # Interval between health checks
       timeout: 5s # Timeout for each health check
       retries: 5 # Number of retries before considering the service as unhealthy
+    networks:
+      - network # Connects the 'db' service to the 'network' network
 
 volumes:
   db_data: # Defines a Docker volume named 'db_data' for persisting PostgreSQL data
