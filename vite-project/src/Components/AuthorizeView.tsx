@@ -1,7 +1,7 @@
 import { Box, Paper, CircularProgress, Typography, Stack } from "@mui/material";
 import axios from "axios";
 import { createContext, useEffect, useState } from "react";
-import { Navigate, useNavigate } from "react-router";
+import { Navigate } from "react-router";
 
 const UserContext = createContext({});
 
@@ -14,7 +14,6 @@ export default function AuthorizeView({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const navigate = useNavigate();
   const emptyUser: User = { email: "" };
   const [user, setUser] = useState<User>(emptyUser);
   const [loading, setLoading] = useState(true);
@@ -62,7 +61,7 @@ export default function AuthorizeView({
       .then((response) => {
         if (response.status === 200) {
           setAuthorized(true);
-          console.log(response.data);
+          setUser({ email: response.data?.email });
         } else {
           console.error("Unauthorized");
         }
