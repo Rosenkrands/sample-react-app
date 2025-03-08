@@ -22,7 +22,7 @@ export default function Login() {
 
     axios
       .post(
-        "http://localhost:4000/login?useCookies=true",
+        `/api/login?useCookies=true`,
         {
           email: email,
           password: password,

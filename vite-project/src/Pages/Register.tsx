@@ -28,16 +28,17 @@ export default function Register() {
     }
 
     axios
-      .post("http://localhost:4000/register", {
-        email: email,
-        password: password,
+      .post(`/api/register`, {
+      email: email,
+      password: password,
       })
       .then((response) => {
-        console.log(response);
-        navigate("/signin");
+      console.log(response);
+      navigate("/signin");
       })
       .catch((error) => {
-        console.error(error);
+      console.error(error);
+      console.log(import.meta.env.VITE_API_URL);
       });
   };
 

@@ -26,8 +26,8 @@ services:
       context: ./asp-net-core-project
       dockerfile: Dockerfile.dev # Assuming you have a production Dockerfile for the API
     container_name: sample-api-prod
-    ports:
-      - "4000:4000"
+    # ports:
+    #   - "4000:4000"
     env_file:
       - ./.env
     environment:
@@ -48,14 +48,14 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_INITDB_ARGS: "--encoding=UTF8"
-    ports:
-      - "5432:5432"
+    # ports:
+    #   - "5432:5432"
     volumes:
       - db_data:/var/lib/postgresql/data
     tmpfs:
       - /var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      test: [ "CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}" ]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -64,6 +64,7 @@ services:
 
 volumes:
   db_data:
+
 
 networks:
   network:

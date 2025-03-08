@@ -57,7 +57,7 @@ export default function AuthorizeView({
       }
     }
 
-    axiosGetWithRetry("http://localhost:4000/pingauth")
+    axiosGetWithRetry(`/api/pingauth`)
       .then((response) => {
         if (response.status === 200) {
           setAuthorized(true);

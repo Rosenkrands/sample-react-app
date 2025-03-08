@@ -10,7 +10,7 @@ export default function Home() {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "http://localhost:4000/logout",
+        `/api/logout`,
         {},
         { withCredentials: true }
       );

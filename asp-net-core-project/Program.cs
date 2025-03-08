@@ -71,7 +71,7 @@ app.MapGet("/pingauth", (ClaimsPrincipal user) =>
 }).RequireAuthorization();
 
 app.UseCors(p => p
-    .WithOrigins("http://localhost:8080")
+    .SetIsOriginAllowed(origin => new Uri(origin).Host == "localhost" || new Uri(origin).Host.EndsWith($".{Environment.GetEnvironmentVariable("DOMAIN")}"))
     .AllowAnyMethod()
     .AllowAnyHeader()
     .AllowCredentials());
